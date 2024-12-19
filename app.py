@@ -1,6 +1,7 @@
 import streamlit as st
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from textwrap import wrap
 
 # Function to create a professional, ATS-friendly PDF
 def create_pdf(file_path, name, email, phone, summary, skills, experience, education):
@@ -32,7 +33,8 @@ def create_pdf(file_path, name, email, phone, summary, skills, experience, educa
     c.drawString(margin, y_position, "Professional Summary:")
     y_position -= 20
     c.setFont("Helvetica", 10)
-    for line in summary.split("\n"):
+    wrapped_summary = wrap(summary, width=90)  # Wrap text to fit within page width
+    for line in wrapped_summary:
         c.drawString(margin + 20, y_position, line)
         y_position -= 15
 
@@ -49,14 +51,15 @@ def create_pdf(file_path, name, email, phone, summary, skills, experience, educa
         c.drawString(x_position, y_position, f"- {skill.strip()}")
         if (i + 1) % 3 == 0:
             y_position -= 15
+    y_position -= 20
 
     # Work Experience
-    y_position -= 30
     c.setFont("Helvetica-Bold", 12)
     c.drawString(margin, y_position, "Work Experience:")
     y_position -= 20
     c.setFont("Helvetica", 10)
-    for line in experience.split("\n"):
+    experience_lines = experience.split('\n')
+    for line in experience_lines:
         if y_position < 50:  # Add a new page if content exceeds current page
             c.showPage()
             y_position = height - 50
@@ -69,7 +72,8 @@ def create_pdf(file_path, name, email, phone, summary, skills, experience, educa
     c.drawString(margin, y_position, "Education:")
     y_position -= 20
     c.setFont("Helvetica", 10)
-    for line in education.split("\n"):
+    education_lines = education.split('\n')
+    for line in education_lines:
         if y_position < 50:  # Add a new page if content exceeds current page
             c.showPage()
             y_position = height - 50
