@@ -66,11 +66,10 @@ The project is hosted on **Streamlit Cloud**. To deploy:
 
 ---
 
-## Live Demo Video
-*Check out the live demo to see the application in action!*
+## Live Demo 🎥
+Click below to watch the live demo of the application in action:
 
-Download the live demo video:
-(https://github.com/Dibyanshi26/resume-builder/raw/main/assets/Live-Recording.mp4)
+[Download Live Demo Video](https://github.com/Dibyanshi26/resume-builder/raw/main/assets/Live-Recording.mp4)
 
 ---
 
