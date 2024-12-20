@@ -78,7 +78,7 @@ def create_resume(file_path, name, email, phone, linkedin, github, tableau, summ
     doc.build(elements)
 
 
-def create_cover_letter(file_path, name, company_name, job_title, key_skills, achievements):
+def create_cover_letter(file_path, name, company_name, job_title, key_skills, achievements, phone, email, linkedin, tableau):
     doc = SimpleDocTemplate(file_path, pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=72)
     elements = []
 
@@ -86,47 +86,57 @@ def create_cover_letter(file_path, name, company_name, job_title, key_skills, ac
     normal_style = ParagraphStyle(
         name="Normal",
         fontSize=10,
-        leading=12,
+        leading=14,
         fontName="Helvetica",
+    )
+    bold_style = ParagraphStyle(
+        name="Bold",
+        fontSize=10,
+        leading=14,
+        fontName="Helvetica-Bold",
     )
     bullet_style = ParagraphStyle(
         name="Bullet",
         fontSize=10,
-        leading=12,
+        leading=14,
         fontName="Helvetica",
-        bulletIndent=10,
+        bulletIndent=15,
+        spaceBefore=3,
     )
 
     # Cover Letter Content
-    cover_letter_content = f"""
+    content = f"""
     Dear Hiring Team at {company_name},
 
-    I am excited to apply for the {job_title} position at {company_name}. With a strong foundation in {', '.join(key_skills.split(','))}, 
-    I bring a wealth of experience and a passion for driving data-driven decisions. My career is defined by my ability to leverage 
-    advanced analytics, innovative thinking, and a collaborative approach to solve complex challenges.
+    I am excited to apply for the {job_title} position at {company_name}. With a strong foundation in {', '.join(key_skills.split(',')[:5])} 
+    and expertise in tools like {', '.join(key_skills.split(',')[5:10])}, I am eager to contribute to building actionable insights and driving data-driven decisions.
 
-    In my most recent role, I achieved:
+    In my most recent role, I have:
     """
-    elements.append(Paragraph(cover_letter_content.strip(), normal_style))
+    elements.append(Paragraph(content.strip(), normal_style))
 
-    # Add Bullet Points for Achievements
+    # Bullet points for achievements
     for achievement in achievements.split(','):
         elements.append(Paragraph(f"- {achievement.strip()}", bullet_style))
 
-    closing_paragraph = f"""
-    These accomplishments reflect my commitment to delivering meaningful results and my ability to adapt to dynamic challenges. 
-    At {company_name}, I am eager to bring this energy and expertise to your team. The {job_title} role aligns perfectly with my skillset 
-    and career aspirations, offering an exciting opportunity to contribute to your organization's success.
+    # Continue the letter
+    body = f"""
+    These accomplishments highlight my ability to translate complex data into clear insights, streamline processes for efficiency, 
+    and foster collaboration across cross-functional teams. My experience in {', '.join(key_skills.split(',')[10:15])} has honed my ability to adapt to evolving business needs 
+    while delivering high-quality results.
 
-    I would welcome the chance to discuss how my qualifications align with your needs and explore how I can contribute to the continued 
-    success of {company_name}. Please feel free to contact me at {phone} or {email} to schedule a conversation.
+    What excites me about joining {company_name} is its commitment to leveraging data to create impactful solutions. I thrive in fast-paced, collaborative environments 
+    and bring a problem-solving mindset to deliver meaningful results.
 
-    Thank you for considering my application. I look forward to the opportunity to join your innovative team.
+    I would welcome the opportunity to discuss how my skills and experience align with the needs of {company_name}. Please feel free to contact me at {phone} or {email} 
+    to schedule a conversation. You can also view my LinkedIn profile ({linkedin}) and Tableau Public profile ({tableau}) for additional details about my work.
+
+    Thank you for considering my application. I look forward to contributing to your team's success.
 
     Best regards,
     {name}
     """
-    elements.append(Paragraph(closing_paragraph.strip(), normal_style))
+    elements.append(Paragraph(body.strip(), normal_style))
 
     # Build PDF
     doc.build(elements)
