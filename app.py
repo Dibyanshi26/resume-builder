@@ -89,31 +89,44 @@ def create_cover_letter(file_path, name, company_name, job_title, key_skills, ac
         leading=12,
         fontName="Helvetica",
     )
+    bullet_style = ParagraphStyle(
+        name="Bullet",
+        fontSize=10,
+        leading=12,
+        fontName="Helvetica",
+        bulletIndent=10,
+    )
 
     # Cover Letter Content
     cover_letter_content = f"""
-    Dear Hiring Manager at {company_name},
+    Dear Hiring Team at {company_name},
 
-    I am writing to express my enthusiasm for the {job_title} position at {company_name}. With a solid foundation in {', '.join(key_skills.split(','))}, 
-    I have successfully applied my expertise to solve complex challenges and drive impactful results. My commitment to innovation and precision aligns seamlessly 
-    with the values and goals of your organization.
+    I am excited to apply for the {job_title} position at {company_name}. With a strong foundation in {', '.join(key_skills.split(','))}, 
+    I bring a wealth of experience and a passion for driving data-driven decisions. My career is defined by my ability to leverage 
+    advanced analytics, innovative thinking, and a collaborative approach to solve complex challenges.
 
-    Over the course of my career, I have achieved several milestones, such as:
-    {chr(10).join([f"- {achievement.strip()}" for achievement in achievements.split(',')])}
+    In my most recent role, I achieved:
+    """
+    elements.append(Paragraph(cover_letter_content.strip(), normal_style))
 
-    These experiences have honed my ability to adapt to evolving business needs and leverage analytical tools to optimize processes and uncover opportunities for growth. 
-    My skills in {', '.join(key_skills.split(',')[:5])} have allowed me to excel in cross-functional teams and deliver high-quality results, even under tight deadlines.
+    # Add Bullet Points for Achievements
+    for achievement in achievements.split(','):
+        elements.append(Paragraph(f"- {achievement.strip()}", bullet_style))
 
-    At {company_name}, I am eager to bring my passion for data-driven insights and my proven track record of success to contribute meaningfully to your team. 
-    The {job_title} role presents the perfect opportunity for me to combine my skills and experience with my desire to make a measurable impact.
+    closing_paragraph = f"""
+    These accomplishments reflect my commitment to delivering meaningful results and my ability to adapt to dynamic challenges. 
+    At {company_name}, I am eager to bring this energy and expertise to your team. The {job_title} role aligns perfectly with my skillset 
+    and career aspirations, offering an exciting opportunity to contribute to your organization's success.
 
-    Thank you for considering my application. I would welcome the chance to discuss how my qualifications align with your needs and explore how I can contribute to the continued success of {company_name}. 
-    Please feel free to contact me at {phone} or {email} to schedule a conversation.
+    I would welcome the chance to discuss how my qualifications align with your needs and explore how I can contribute to the continued 
+    success of {company_name}. Please feel free to contact me at {phone} or {email} to schedule a conversation.
+
+    Thank you for considering my application. I look forward to the opportunity to join your innovative team.
 
     Best regards,
     {name}
     """
-    elements.append(Paragraph(cover_letter_content.strip(), normal_style))
+    elements.append(Paragraph(closing_paragraph.strip(), normal_style))
 
     # Build PDF
     doc.build(elements)
