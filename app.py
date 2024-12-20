@@ -1,6 +1,6 @@
 import streamlit as st
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib import colors
@@ -9,7 +9,6 @@ from reportlab.lib import colors
 def create_resume(file_path, name, email, phone, linkedin, github, tableau, summary, education, skills, experience, projects):
     doc = SimpleDocTemplate(file_path, pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=72)
     elements = []
-    styles = getSampleStyleSheet()
 
     # Define Styles
     header_style = ParagraphStyle(
@@ -82,7 +81,6 @@ def create_resume(file_path, name, email, phone, linkedin, github, tableau, summ
 def create_cover_letter(file_path, name, company_name, job_title, key_skills, achievements):
     doc = SimpleDocTemplate(file_path, pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=72)
     elements = []
-    styles = getSampleStyleSheet()
 
     # Define Styles
     normal_style = ParagraphStyle(
@@ -96,14 +94,21 @@ def create_cover_letter(file_path, name, company_name, job_title, key_skills, ac
     cover_letter_content = f"""
     Dear Hiring Manager at {company_name},
 
-    I am excited to apply for the position of {job_title} at {company_name}. With expertise in {', '.join(key_skills.split(','))}, 
-    I bring a wealth of experience and enthusiasm to contribute to your team.
+    I am writing to express my enthusiasm for the {job_title} position at {company_name}. With a solid foundation in {', '.join(key_skills.split(','))}, 
+    I have successfully applied my expertise to solve complex challenges and drive impactful results. My commitment to innovation and precision aligns seamlessly 
+    with the values and goals of your organization.
 
-    Key highlights of my career include:
+    Over the course of my career, I have achieved several milestones, such as:
     {chr(10).join([f"- {achievement.strip()}" for achievement in achievements.split(',')])}
 
-    I am eager to bring my skills and passion to {company_name} and contribute to its continued success. 
-    Thank you for considering my application. I look forward to discussing how my experience aligns with your team's goals.
+    These experiences have honed my ability to adapt to evolving business needs and leverage analytical tools to optimize processes and uncover opportunities for growth. 
+    My skills in {', '.join(key_skills.split(',')[:5])} have allowed me to excel in cross-functional teams and deliver high-quality results, even under tight deadlines.
+
+    At {company_name}, I am eager to bring my passion for data-driven insights and my proven track record of success to contribute meaningfully to your team. 
+    The {job_title} role presents the perfect opportunity for me to combine my skills and experience with my desire to make a measurable impact.
+
+    Thank you for considering my application. I would welcome the chance to discuss how my qualifications align with your needs and explore how I can contribute to the continued success of {company_name}. 
+    Please feel free to contact me at {phone} or {email} to schedule a conversation.
 
     Best regards,
     {name}
