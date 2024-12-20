@@ -50,11 +50,9 @@ def create_resume(file_path, name, email, phone, linkedin, github, tableau, summ
     # Education Section
     elements.append(Paragraph("Education", section_header_style))
     for entry in education.split("\n\n"):
-        if " - " in entry:
-            institution, details = entry.split(" - ", 1)
-            elements.append(Paragraph(f"<b>{institution.strip()}</b>", normal_style))
-            elements.append(Paragraph(f"- {details.strip()}", normal_style))
-        elements.append(Spacer(1, 6))
+        if entry.strip():
+            elements.append(Paragraph(entry.strip(), normal_style))
+            elements.append(Spacer(1, 6))
 
     # Skills Section
     elements.append(Paragraph("Skills", section_header_style))
@@ -66,22 +64,16 @@ def create_resume(file_path, name, email, phone, linkedin, github, tableau, summ
     # Work Experience Section
     elements.append(Paragraph("Work Experience", section_header_style))
     for entry in experience.split("\n\n"):
-        if " - " in entry:
-            company, details = entry.split(" - ", 1)
-            elements.append(Paragraph(f"<b>{company.strip()}</b>", normal_style))
-            for point in details.split("\n"):
-                elements.append(Paragraph(f"- {point.strip()}", normal_style))
-        elements.append(Spacer(1, 6))
+        if entry.strip():
+            elements.append(Paragraph(entry.strip(), normal_style))
+            elements.append(Spacer(1, 6))
 
     # Projects Section
     elements.append(Paragraph("Projects", section_header_style))
     for entry in projects.split("\n\n"):
-        if " - " in entry:
-            project, details = entry.split(" - ", 1)
-            elements.append(Paragraph(f"<b>{project.strip()}</b>", normal_style))
-            for point in details.split("\n"):
-                elements.append(Paragraph(f"- {point.strip()}", normal_style))
-        elements.append(Spacer(1, 6))
+        if entry.strip():
+            elements.append(Paragraph(entry.strip(), normal_style))
+            elements.append(Spacer(1, 6))
 
     # Build PDF
     doc.build(elements)
@@ -116,7 +108,7 @@ def create_cover_letter(file_path, name, company_name, job_title, key_skills, ac
     Best regards,
     {name}
     """
-    elements.append(Paragraph(cover_letter_content, normal_style))
+    elements.append(Paragraph(cover_letter_content.strip(), normal_style))
 
     # Build PDF
     doc.build(elements)
