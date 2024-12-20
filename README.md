@@ -1,27 +1,28 @@
-```markdown
 # ✨ Tailored Resume & Cover Letter Builder ✨
 
 ## Overview
 The **Tailored Resume & Cover Letter Builder** is a user-friendly web application that helps you create polished resumes and personalized cover letters in minutes. Whether you’re a seasoned professional or just starting your career, this tool ensures your documents are professional and impactful.
+
+---
 
 ## Key Features
 - 📄 **Resume Builder**: Create detailed resumes with professional formatting.
 - ✉️ **Cover Letter Builder**: Generate tailored cover letters for specific job roles.
 - 🖥️ **Streamlined UI**: A step-by-step process for ease of use.
 - 📥 **Auto-download PDFs**: Get separate files for resumes and cover letters.
-- 🌟 Footer: *"✨ Designed with ❤️ using Streamlit, by Dibyanshi Singh ✨"*
+- 🌟 Footer: `"✨ Designed with ❤️ using Streamlit, by Dibyanshi Singh ✨"`
 
 ---
 
 ## Steps to Create Your Documents
 
-### **Steps to Create a Resume**
+### Steps to Create a Resume:
 1. Fill out your personal information.
 2. Enter your professional summary, education, skills, and work experience.
 3. Add projects you’ve worked on, including descriptions and key achievements.
 4. Click the **'Generate Resume'** button to download your resume.
 
-### **Steps to Create a Cover Letter**
+### Steps to Create a Cover Letter:
 1. Enter your address, company name, and job title.
 2. Provide key skills and achievements relevant to the job.
 3. Click the **'Generate Cover Letter'** button to download your personalized cover letter.
@@ -30,7 +31,7 @@ The **Tailored Resume & Cover Letter Builder** is a user-friendly web applicatio
 
 ## Getting Started
 
-### **1. Prerequisites**
+### Prerequisites
 Ensure you have:
 - **Python** installed (version 3.7 or above).
 - Required libraries installed (`reportlab`, `streamlit`).
@@ -38,7 +39,6 @@ Ensure you have:
 Install dependencies:
 ```bash
 pip install -r requirements.txt
-```
 
 ---
 
