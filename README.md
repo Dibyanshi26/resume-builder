@@ -90,21 +90,6 @@ Click below to watch the live demo of the application in action:
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
-```
-
----
-
-### How to Add a Live Demo Video Link on GitHub
-1. Upload your video to YouTube.
-2. Replace `YOUR_VIDEO_ID` in the following markdown syntax with your YouTube video ID:
-   ```markdown
-   [![Live Demo](https://img.youtube.com/vi/YOUR_VIDEO_ID/0.jpg)](https://youtu.be/YOUR_VIDEO_ID)
-   ```
-   Example: If your video URL is `https://youtu.be/abcd1234`, replace `YOUR_VIDEO_ID` with `abcd1234`.
-
-3. Add this markdown syntax to your `README.md` under the **Live Demo Video** section.
-
-4. Push the updated `README.md` file to your GitHub repository.
 
 This will add a clickable YouTube thumbnail link to your GitHub project.
 
