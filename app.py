@@ -78,39 +78,66 @@ def create_resume(file_path, name, email, phone, linkedin, github, tableau, summ
     doc.build(elements)
 
 
-def create_cover_letter(file_path, name, company_name, job_title, key_skills, achievements, phone, email, linkedin, tableau):
+def create_cover_letter(file_path, name, address, phone, email, company_name, job_title, key_skills, achievements):
     doc = SimpleDocTemplate(file_path, pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=72)
     elements = []
 
     # Define Styles
+    header_style = ParagraphStyle(
+        name="Header",
+        fontSize=12,
+        leading=14,
+        fontName="Helvetica",
+    )
     normal_style = ParagraphStyle(
         name="Normal",
         fontSize=10,
-        leading=12,
+        leading=14,
         fontName="Helvetica",
     )
 
     # Cover Letter Content
-    cover_letter_content = f"""
-    Dear Hiring Team at {company_name},
+    header_content = f"""
+    {name}<br/>
+    {address}<br/>
+    {email} | {phone}<br/>
+    <br/>
+    {company_name}<br/>
+    <br/>
+    Dear Hiring Team at {company_name},<br/><br/>
+    """
+    elements.append(Paragraph(header_content, header_style))
 
-    I am excited to apply for the {job_title} position at {company_name}. With a strong foundation in {', '.join(key_skills.split(','))}, 
-    I bring a wealth of experience and enthusiasm to contribute to your team.
+    introduction = f"""
+    I am excited to apply for the {job_title} position at {company_name}. With a solid foundation in {', '.join(key_skills.split(','))}, 
+    I bring a proven ability to tackle complex challenges and deliver impactful results. I came across this opportunity through [source, e.g., company website], 
+    and I am eager to contribute to the continued success of your organization.
+    """
+    elements.append(Paragraph(introduction, normal_style))
+    elements.append(Spacer(1, 12))
 
-    In my most recent roles, I have achieved the following:
-    {chr(10).join([f"- {achievement.strip()}" for achievement in achievements.split(',')])}
+    story_1 = f"""
+    In my role as [first experience], I [describe your responsibilities and achievements]. This allowed me to develop expertise in {', '.join(key_skills.split(',')[:3])}, 
+    enabling me to achieve [specific outcomes].
+    """
+    elements.append(Paragraph(story_1, normal_style))
+    elements.append(Spacer(1, 12))
 
-    These accomplishments reflect my ability to adapt to dynamic challenges and contribute meaningfully to organizational goals. 
-    At {company_name}, I am eager to bring my skills and expertise to deliver measurable impact.
+    story_2 = f"""
+    Additionally, during my time at [second experience], I [describe another achievement]. This further strengthened my skills in [list skills], 
+    ensuring successful delivery of [specific results].
+    """
+    elements.append(Paragraph(story_2, normal_style))
+    elements.append(Spacer(1, 12))
 
-    Please feel free to contact me at {phone} or {email}. I invite you to view my LinkedIn profile ({linkedin}) and Tableau Public portfolio ({tableau}) for further insights into my work.
-
-    Thank you for considering my application. I look forward to the opportunity to discuss how my experience aligns with your goals.
-
-    Best regards,
+    conclusion = f"""
+    I am confident that my background, combined with my passion for [relevant field], makes me a strong candidate for this role. 
+    I look forward to the opportunity to discuss how I can contribute to {company_name}'s goals. Please feel free to contact me at {phone} or {email}. 
+    Thank you for considering my application.<br/><br/>
+    Best regards,<br/>
     {name}
     """
-    elements.append(Paragraph(cover_letter_content.strip(), normal_style))
+    elements.append(Paragraph(conclusion.strip(), normal_style))
 
     # Build PDF
     doc.build(elements)
@@ -135,21 +162,21 @@ projects = st.text_area("Projects (separate entries with two newlines, format: P
 
 # Input fields for cover letter
 st.header("Cover Letter")
+address = st.text_area("Your Address")
 company_name = st.text_input("Company Name")
 job_title = st.text_input("Job Title")
 key_skills = st.text_area("Key Skills (comma-separated)")
 achievements = st.text_area("Achievements (comma-separated)")
 
-# Generate Resume Button
+# Generate Resume and Cover Letter buttons
 if st.button("Generate Resume"):
     resume_path = "resume.pdf"
     create_resume(resume_path, name, email, phone, linkedin, github, tableau, summary, education, skills, experience, projects)
     with open(resume_path, "rb") as pdf_file:
         st.download_button("Download Resume", pdf_file, file_name="resume.pdf")
 
-# Generate Cover Letter Button
 if st.button("Generate Cover Letter"):
     cover_letter_path = "cover_letter.pdf"
-    create_cover_letter(cover_letter_path, name, company_name, job_title, key_skills, achievements, phone, email, linkedin, tableau)
+    create_cover_letter(cover_letter_path, name, address, phone, email, company_name, job_title, key_skills, achievements)
     with open(cover_letter_path, "rb") as pdf_file:
         st.download_button("Download Cover Letter", pdf_file, file_name="cover_letter.pdf")
