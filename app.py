@@ -2,7 +2,7 @@ import streamlit as st
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.pagesizes import letter
-from reportlab.lib.enums import TA_CENTER, TA_LEFT
+from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.units import inch
 from reportlab.lib import colors
 
@@ -34,6 +34,12 @@ def create_pdf(file_path, name, email, phone, linkedin, github, tableau, summary
         leading=12,
         fontName="Helvetica",
     )
+    italic_style = ParagraphStyle(
+        name="Italic",
+        fontSize=10,
+        leading=12,
+        fontName="Helvetica-Oblique",
+    )
 
     # Header Section
     header_content = f"""
@@ -50,14 +56,19 @@ def create_pdf(file_path, name, email, phone, linkedin, github, tableau, summary
 
     # Education Section
     elements.append(Paragraph("Education", section_header_style))
-    for entry in education.split("\n"):
-        if " - " in entry:
-            institution, details = entry.split(" - ", 1)
-            elements.append(Paragraph(f"<b>{institution.strip()}</b>", normal_style))
-            elements.append(Paragraph(f"- {details.strip()}", normal_style))
-        else:
-            elements.append(Paragraph(f"<b>{entry.strip()}</b>", normal_style))
-        elements.append(Spacer(1, 6))
+    for entry in education.split("\n\n"):
+        lines = entry.split("\n")
+        if len(lines) >= 4:
+            institution = lines[0].strip()
+            location = lines[1].strip()
+            degree = lines[2].strip()
+            dates = lines[3].strip()
+
+            elements.append(Paragraph(f"<b>{institution}</b>", normal_style))
+            elements.append(Paragraph(location, normal_style))
+            elements.append(Paragraph(f"<i>{degree}</i>", italic_style))
+            elements.append(Paragraph(dates, normal_style))
+            elements.append(Spacer(1, 12))
 
     # Skills Section
     elements.append(Paragraph("Skills", section_header_style))
@@ -76,26 +87,26 @@ def create_pdf(file_path, name, email, phone, linkedin, github, tableau, summary
     # Work Experience Section
     elements.append(Paragraph("Work Experience", section_header_style))
     for entry in experience.split("\n\n"):
-        if " - " in entry:
-            company, details = entry.split(" - ", 1)
-            elements.append(Paragraph(f"<b>{company.strip()}</b>", normal_style))
-            for point in details.split("\n"):
+        parts = entry.split(" - ", 1)
+        if len(parts) == 2:
+            company = parts[0].strip()
+            details = parts[1].strip().split("\n")
+            elements.append(Paragraph(f"<b>{company}</b>", normal_style))
+            for point in details:
                 elements.append(Paragraph(f"- {point.strip()}", normal_style))
-        else:
-            elements.append(Paragraph(f"<b>{entry.strip()}</b>", normal_style))
-        elements.append(Spacer(1, 6))
+            elements.append(Spacer(1, 12))
 
     # Projects Section
     elements.append(Paragraph("Projects", section_header_style))
     for entry in projects.split("\n\n"):
-        if " - " in entry:
-            project, details = entry.split(" - ", 1)
-            elements.append(Paragraph(f"<b>{project.strip()}</b>", normal_style))
-            for point in details.split("\n"):
+        parts = entry.split(" - ", 1)
+        if len(parts) == 2:
+            project = parts[0].strip()
+            details = parts[1].strip().split("\n")
+            elements.append(Paragraph(f"<b>{project}</b>", normal_style))
+            for point in details:
                 elements.append(Paragraph(f"- {point.strip()}", normal_style))
-        else:
-            elements.append(Paragraph(f"<b>{entry.strip()}</b>", normal_style))
-        elements.append(Spacer(1, 6))
+            elements.append(Spacer(1, 12))
 
     # Build PDF
     doc.build(elements)
@@ -112,10 +123,10 @@ linkedin = st.text_input("LinkedIn URL")
 github = st.text_input("GitHub URL")
 tableau = st.text_input("Tableau Public URL")
 summary = st.text_area("Professional Summary")
-education = st.text_area("Education (separate by new lines)")
+education = st.text_area("Education (separate entries with two newlines, format: Institution\nLocation\nDegree\nDates)")
 skills = st.text_area("Skills (comma-separated)")
-experience = st.text_area("Work Experience (separate by new lines, format: Company - Details)")
-projects = st.text_area("Projects (separate by new lines, format: Project - Details)")
+experience = st.text_area("Work Experience (separate entries with two newlines, format: Company - Details)")
+projects = st.text_area("Projects (separate entries with two newlines, format: Project - Details)")
 
 # Generate Resume button
 if st.button("Generate Resume"):
