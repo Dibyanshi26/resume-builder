@@ -91,6 +91,3 @@ Click below to watch the live demo of the application in action:
 ## License
 This project is licensed under the [MIT License](LICENSE).
 
-This will add a clickable YouTube thumbnail link to your GitHub project.
-
-Let me know if you'd like help with anything else!
