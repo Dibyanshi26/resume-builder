@@ -1,92 +1,98 @@
 import streamlit as st
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
-from reportlab.lib.enums import TA_CENTER, TA_LEFT
-from reportlab.lib.units import inch
-from reportlab.lib import colors
+from textwrap import wrap
 
+# Function to create a professional PDF
+def create_pdf(file_path, name, email, phone, linkedin, github, summary, skills, experience, education, projects):
+    c = canvas.Canvas(file_path, pagesize=letter)
+    width, height = letter
+    margin = 72  # 1-inch margin
+    y_position = height - margin
 
-def create_pdf(file_path, name, email, phone, linkedin, github, tableau, summary, education, skills, experience, projects):
-    # PDF Document with 1-inch margins
-    doc = SimpleDocTemplate(file_path, pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=72)
-    elements = []
-    styles = getSampleStyleSheet()
+    # Header
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(margin, y_position, name)
+    y_position -= 20
 
-    # Custom styles
-    header_style = ParagraphStyle(
-        name="Header",
-        fontSize=14,
-        alignment=TA_CENTER,
-        fontName="Helvetica-Bold",
-        spaceAfter=12,
-    )
-    section_header_style = ParagraphStyle(
-        name="SectionHeader",
-        fontSize=12,
-        fontName="Helvetica-Bold",
-        textColor=colors.HexColor("#333333"),
-        spaceAfter=10,
-        spaceBefore=20,
-    )
-    normal_style = ParagraphStyle(
-        name="Normal",
-        fontSize=10,
-        leading=12,
-        fontName="Helvetica",
-    )
-
-    # Header Section
-    header_content = f"""
-    <b>{name.upper()}</b><br/>
-    {email} | {phone} | <a href='{linkedin}'>LinkedIn</a> | <a href='{github}'>GitHub</a> | <a href='{tableau}'>Tableau Public</a>
-    """
-    elements.append(Paragraph(header_content, header_style))
-    elements.append(Spacer(1, 12))
+    # Contact Information
+    c.setFont("Helvetica", 10)
+    c.drawString(margin, y_position, f"{email} | {phone} | LinkedIn: {linkedin} | GitHub: {github}")
+    y_position -= 40
 
     # Professional Summary
-    elements.append(Paragraph("Professional Summary", section_header_style))
-    elements.append(Paragraph(summary, normal_style))
-    elements.append(Spacer(1, 12))
-
-    # Education
-    elements.append(Paragraph("Education", section_header_style))
-    education_lines = education.split('\n')
-    for line in education_lines:
-        elements.append(Paragraph(f"• {line}", normal_style))
-    elements.append(Spacer(1, 12))
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(margin, y_position, "PROFESSIONAL SUMMARY")
+    y_position -= 20
+    c.setFont("Helvetica", 10)
+    for line in wrap(summary, width=80):
+        c.drawString(margin, y_position, line)
+        y_position -= 15
+    y_position -= 20
 
     # Skills
-    elements.append(Paragraph("Skills", section_header_style))
-    skills_list = skills.split(',')
-    skills_table = [[skill.strip() for skill in skills_list[i:i+3]] for i in range(0, len(skills_list), 3)]
-    skills_table_formatted = Table(skills_table, colWidths=[2 * inch] * 3)
-    skills_table_formatted.setStyle(TableStyle([
-        ('TEXTCOLOR', (0, 0), (-1, -1), colors.HexColor("#333333")),
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-    ]))
-    elements.append(skills_table_formatted)
-    elements.append(Spacer(1, 12))
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(margin, y_position, "SKILLS")
+    y_position -= 20
+    c.setFont("Helvetica", 10)
+    skills_list = skills.split(",")
+    for i, skill in enumerate(skills_list):
+        c.drawString(margin + 20, y_position, f"• {skill.strip()}")
+        y_position -= 15
+    y_position -= 20
 
     # Work Experience
-    elements.append(Paragraph("Work Experience", section_header_style))
-    experience_lines = experience.split('\n')
-    for line in experience_lines:
-        elements.append(Paragraph(f"• {line}", normal_style))
-    elements.append(Spacer(1, 12))
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(margin, y_position, "WORK EXPERIENCE")
+    y_position -= 20
+    c.setFont("Helvetica", 10)
+    for entry in experience.split("\n\n"):  # Separate each role by double newline
+        lines = entry.split("\n")
+        if len(lines) > 0:
+            c.setFont("Helvetica-Bold", 10)
+            c.drawString(margin + 20, y_position, lines[0])  # Position/Company
+            y_position -= 15
+            c.setFont("Helvetica", 10)
+            for line in lines[1:]:
+                c.drawString(margin + 40, y_position, f"• {line.strip()}")
+                y_position -= 15
+        y_position -= 10
+
+    # Education
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(margin, y_position, "EDUCATION")
+    y_position -= 20
+    c.setFont("Helvetica", 10)
+    for entry in education.split("\n\n"):
+        lines = entry.split("\n")
+        if len(lines) > 0:
+            c.setFont("Helvetica-Bold", 10)
+            c.drawString(margin + 20, y_position, lines[0])  # Degree/University
+            y_position -= 15
+            c.setFont("Helvetica", 10)
+            for line in lines[1:]:
+                c.drawString(margin + 40, y_position, f"• {line.strip()}")
+                y_position -= 15
+        y_position -= 10
 
     # Projects
-    elements.append(Paragraph("Projects", section_header_style))
-    project_lines = projects.split('\n')
-    for line in project_lines:
-        elements.append(Paragraph(f"• {line}", normal_style))
-    elements.append(Spacer(1, 12))
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(margin, y_position, "PROJECTS")
+    y_position -= 20
+    c.setFont("Helvetica", 10)
+    for entry in projects.split("\n\n"):
+        lines = entry.split("\n")
+        if len(lines) > 0:
+            c.setFont("Helvetica-Bold", 10)
+            c.drawString(margin + 20, y_position, lines[0])  # Project Title
+            y_position -= 15
+            c.setFont("Helvetica", 10)
+            for line in lines[1:]:
+                c.drawString(margin + 40, y_position, f"• {line.strip()}")
+                y_position -= 15
+        y_position -= 10
 
-    # Build the PDF
-    doc.build(elements)
-
+    c.save()
 
 # Streamlit UI
 st.title("Resume Builder")
@@ -97,16 +103,15 @@ email = st.text_input("Email")
 phone = st.text_input("Phone")
 linkedin = st.text_input("LinkedIn URL")
 github = st.text_input("GitHub URL")
-tableau = st.text_input("Tableau Public URL")
 summary = st.text_area("Professional Summary")
-education = st.text_area("Education (separate by new lines)")
 skills = st.text_area("Skills (comma-separated)")
-experience = st.text_area("Work Experience (separate by new lines)")
-projects = st.text_area("Projects (separate by new lines)")
+experience = st.text_area("Work Experience (separate roles by double newlines, use single newlines for details)")
+education = st.text_area("Education (separate degrees by double newlines, use single newlines for details)")
+projects = st.text_area("Projects (separate projects by double newlines, use single newlines for details)")
 
 # Generate Resume button
 if st.button("Generate Resume"):
     pdf_path = "resume.pdf"
-    create_pdf(pdf_path, name, email, phone, linkedin, github, tableau, summary, education, skills, experience, projects)
+    create_pdf(pdf_path, name, email, phone, linkedin, github, summary, skills, experience, education, projects)
     with open(pdf_path, "rb") as pdf_file:
         st.download_button("Download Resume", pdf_file, file_name="resume.pdf")
