@@ -51,9 +51,12 @@ def create_pdf(file_path, name, email, phone, linkedin, github, tableau, summary
     # Education Section
     elements.append(Paragraph("Education", section_header_style))
     for entry in education.split("\n"):
-        institution, details = entry.split(" - ", 1)
-        elements.append(Paragraph(f"<b>{institution}</b>", normal_style))
-        elements.append(Paragraph(f"- {details}", normal_style))
+        if " - " in entry:
+            institution, details = entry.split(" - ", 1)
+            elements.append(Paragraph(f"<b>{institution.strip()}</b>", normal_style))
+            elements.append(Paragraph(f"- {details.strip()}", normal_style))
+        else:
+            elements.append(Paragraph(f"<b>{entry.strip()}</b>", normal_style))
         elements.append(Spacer(1, 6))
 
     # Skills Section
@@ -73,24 +76,29 @@ def create_pdf(file_path, name, email, phone, linkedin, github, tableau, summary
     # Work Experience Section
     elements.append(Paragraph("Work Experience", section_header_style))
     for entry in experience.split("\n\n"):
-        company, details = entry.split(" - ", 1)
-        elements.append(Paragraph(f"<b>{company}</b>", normal_style))
-        for point in details.split("\n"):
-            elements.append(Paragraph(f"- {point.strip()}", normal_style))
+        if " - " in entry:
+            company, details = entry.split(" - ", 1)
+            elements.append(Paragraph(f"<b>{company.strip()}</b>", normal_style))
+            for point in details.split("\n"):
+                elements.append(Paragraph(f"- {point.strip()}", normal_style))
+        else:
+            elements.append(Paragraph(f"<b>{entry.strip()}</b>", normal_style))
         elements.append(Spacer(1, 6))
 
     # Projects Section
     elements.append(Paragraph("Projects", section_header_style))
     for entry in projects.split("\n\n"):
-        project, details = entry.split(" - ", 1)
-        elements.append(Paragraph(f"<b>{project}</b>", normal_style))
-        for point in details.split("\n"):
-            elements.append(Paragraph(f"- {point.strip()}", normal_style))
+        if " - " in entry:
+            project, details = entry.split(" - ", 1)
+            elements.append(Paragraph(f"<b>{project.strip()}</b>", normal_style))
+            for point in details.split("\n"):
+                elements.append(Paragraph(f"- {point.strip()}", normal_style))
+        else:
+            elements.append(Paragraph(f"<b>{entry.strip()}</b>", normal_style))
         elements.append(Spacer(1, 6))
 
     # Build PDF
     doc.build(elements)
-
 
 
 # Streamlit UI
@@ -106,8 +114,8 @@ tableau = st.text_input("Tableau Public URL")
 summary = st.text_area("Professional Summary")
 education = st.text_area("Education (separate by new lines)")
 skills = st.text_area("Skills (comma-separated)")
-experience = st.text_area("Work Experience (separate by new lines)")
-projects = st.text_area("Projects (separate by new lines)")
+experience = st.text_area("Work Experience (separate by new lines, format: Company - Details)")
+projects = st.text_area("Projects (separate by new lines, format: Project - Details)")
 
 # Generate Resume button
 if st.button("Generate Resume"):
