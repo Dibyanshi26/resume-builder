@@ -8,12 +8,11 @@ from reportlab.lib import colors
 
 
 def create_pdf(file_path, name, email, phone, linkedin, github, tableau, summary, education, skills, experience, projects):
-    # PDF Document with 1-inch margins
     doc = SimpleDocTemplate(file_path, pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=72)
     elements = []
     styles = getSampleStyleSheet()
 
-    # Custom styles
+    # Define Styles
     header_style = ParagraphStyle(
         name="Header",
         fontSize=14,
@@ -51,18 +50,13 @@ def create_pdf(file_path, name, email, phone, linkedin, github, tableau, summary
 
     # Education Section
     elements.append(Paragraph("Education", section_header_style))
-    education_lines = education.split('\n')
-    for line in education_lines:
-        if line.strip():  # Skip empty lines
-            if line.startswith("•"):
-                # Details in regular style
-                elements.append(Paragraph(line.strip("•").strip(), normal_style))
-            else:
-                # Institution name in bold
-                elements.append(Paragraph(f"<b>{line}</b>", normal_style))
-    elements.append(Spacer(1, 12))
+    for entry in education.split("\n"):
+        institution, details = entry.split(" - ", 1)
+        elements.append(Paragraph(f"<b>{institution}</b>", normal_style))
+        elements.append(Paragraph(f"- {details}", normal_style))
+        elements.append(Spacer(1, 6))
 
-    # Skills
+    # Skills Section
     elements.append(Paragraph("Skills", section_header_style))
     skills_list = skills.split(',')
     skills_table = [[skill.strip() for skill in skills_list[i:i+3]] for i in range(0, len(skills_list), 3)]
@@ -76,34 +70,27 @@ def create_pdf(file_path, name, email, phone, linkedin, github, tableau, summary
     elements.append(skills_table_formatted)
     elements.append(Spacer(1, 12))
 
-    # Work Experience
+    # Work Experience Section
     elements.append(Paragraph("Work Experience", section_header_style))
-    experience_lines = experience.split('\n')
-    for line in experience_lines:
-        if line.strip():  # Skip empty lines
-            if line.startswith("•"):
-                # Regular details in bullet points
-                elements.append(Paragraph(line.strip("•").strip(), normal_style))
-            else:
-                # Job title or organization in bold
-                elements.append(Paragraph(f"<b>{line}</b>", normal_style))
-    elements.append(Spacer(1, 12))
+    for entry in experience.split("\n\n"):
+        company, details = entry.split(" - ", 1)
+        elements.append(Paragraph(f"<b>{company}</b>", normal_style))
+        for point in details.split("\n"):
+            elements.append(Paragraph(f"- {point.strip()}", normal_style))
+        elements.append(Spacer(1, 6))
 
-    # Projects
+    # Projects Section
     elements.append(Paragraph("Projects", section_header_style))
-    project_lines = projects.split('\n')
-    for line in project_lines:
-        if line.strip():  # Skip empty lines
-            if line.startswith("•"):
-                # Regular details in bullet points
-                elements.append(Paragraph(line.strip("•").strip(), normal_style))
-            else:
-                # Project name in bold
-                elements.append(Paragraph(f"<b>{line}</b>", normal_style))
-    elements.append(Spacer(1, 12))
+    for entry in projects.split("\n\n"):
+        project, details = entry.split(" - ", 1)
+        elements.append(Paragraph(f"<b>{project}</b>", normal_style))
+        for point in details.split("\n"):
+            elements.append(Paragraph(f"- {point.strip()}", normal_style))
+        elements.append(Spacer(1, 6))
 
-    # Build the PDF
+    # Build PDF
     doc.build(elements)
+
 
 
 # Streamlit UI
