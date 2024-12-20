@@ -49,11 +49,17 @@ def create_pdf(file_path, name, email, phone, linkedin, github, tableau, summary
     elements.append(Paragraph(summary, normal_style))
     elements.append(Spacer(1, 12))
 
-    # Education
+    # Education Section
     elements.append(Paragraph("Education", section_header_style))
     education_lines = education.split('\n')
     for line in education_lines:
-        elements.append(Paragraph(f"• {line}", normal_style))
+        if line.strip():  # Skip empty lines
+            if line.startswith("•"):
+                # Details in regular style
+                elements.append(Paragraph(line.strip("•").strip(), normal_style))
+            else:
+                # Institution name in bold
+                elements.append(Paragraph(f"<b>{line}</b>", normal_style))
     elements.append(Spacer(1, 12))
 
     # Skills
@@ -74,14 +80,26 @@ def create_pdf(file_path, name, email, phone, linkedin, github, tableau, summary
     elements.append(Paragraph("Work Experience", section_header_style))
     experience_lines = experience.split('\n')
     for line in experience_lines:
-        elements.append(Paragraph(f"• {line}", normal_style))
+        if line.strip():  # Skip empty lines
+            if line.startswith("•"):
+                # Regular details in bullet points
+                elements.append(Paragraph(line.strip("•").strip(), normal_style))
+            else:
+                # Job title or organization in bold
+                elements.append(Paragraph(f"<b>{line}</b>", normal_style))
     elements.append(Spacer(1, 12))
 
     # Projects
     elements.append(Paragraph("Projects", section_header_style))
     project_lines = projects.split('\n')
     for line in project_lines:
-        elements.append(Paragraph(f"• {line}", normal_style))
+        if line.strip():  # Skip empty lines
+            if line.startswith("•"):
+                # Regular details in bullet points
+                elements.append(Paragraph(line.strip("•").strip(), normal_style))
+            else:
+                # Project name in bold
+                elements.append(Paragraph(f"<b>{line}</b>", normal_style))
     elements.append(Spacer(1, 12))
 
     # Build the PDF
