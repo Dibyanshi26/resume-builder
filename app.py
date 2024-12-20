@@ -1,20 +1,32 @@
-import streamlit as st
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
-from textwrap import wrap
+from reportlab.lib.utils import simpleSplit
 
-
-# Function to create a professional, ATS-friendly PDF
 def create_pdf(file_path, name, email, phone, linkedin, github, summary, skills, experience, education):
     c = canvas.Canvas(file_path, pagesize=letter)
     width, height = letter
-    margin = 50
-    y_position = height - 60
+    margin = 72  # 1-inch margin
+    y_position = height - margin
 
-    # Header with Name and Contact Information
+    # Helper Function to Wrap Text
+    def wrap_text(text, max_width, x, y, font_size=10):
+        c.setFont("Helvetica", font_size)
+        lines = simpleSplit(text, "Helvetica", max_width)
+        for line in lines:
+            c.drawString(x, y, line)
+            y -= 14
+        return y
+
+    # Header
     c.setFont("Helvetica-Bold", 18)
     c.drawString(margin, y_position, name)
-    y_position -= 25
+    c.drawImage("profile_picture.jpg", width - margin - 50, y_position - 25, width=50, height=50, preserveAspectRatio=True, anchor="n")
+    y_position -= 40
+
+    # Contact Information
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(margin, y_position, "Contact Information:")
+    y_position -= 20
     c.setFont("Helvetica", 10)
     c.drawString(margin, y_position, f"Email: {email}")
     y_position -= 15
@@ -30,26 +42,21 @@ def create_pdf(file_path, name, email, phone, linkedin, github, summary, skills,
     c.drawString(margin, y_position, "Professional Summary:")
     y_position -= 20
     c.setFont("Helvetica", 10)
-    wrapped_summary = wrap(summary, width=90)
-    for line in wrapped_summary:
-        c.drawString(margin, y_position, line)
-        y_position -= 15
+    y_position = wrap_text(summary, width - 2 * margin, margin, y_position)
 
-    # Skills Section
-    y_position -= 30
+    # Skills
+    y_position -= 20
     c.setFont("Helvetica-Bold", 12)
     c.drawString(margin, y_position, "Skills:")
     y_position -= 20
     c.setFont("Helvetica", 10)
-    skill_lines = [
-        "Programming and Database: Python (Streamlit, Pandas, Matplotlib, Seaborn), R, SQL, MySQL, Neo4j, MongoDB",
-        "Data Visualization and Analytics: Tableau, Power BI, MS Excel, Predictive Modeling, Power Query",
-        "Cloud and Platforms: Microsoft Azure, Google Cloud Platform (GCP)",
-        "Tools and Other Skills: Git/GitHub, APIs (RESTful), Image Processing, ETL Processes, HTML, CSS, JavaScript"
-    ]
-    for skill in skill_lines:
-        c.drawString(margin, y_position, skill)
-        y_position -= 15
+    skills_list = skills.split(",")
+    col_width = (width - 2 * margin) / 3
+    for i, skill in enumerate(skills_list):
+        x_position = margin + (i % 3) * col_width
+        c.drawString(x_position, y_position, skill.strip())
+        if (i + 1) % 3 == 0:
+            y_position -= 15
 
     # Work Experience
     y_position -= 30
@@ -57,12 +64,12 @@ def create_pdf(file_path, name, email, phone, linkedin, github, summary, skills,
     c.drawString(margin, y_position, "Work Experience:")
     y_position -= 20
     c.setFont("Helvetica", 10)
-    for line in experience.split("\n"):
-        if y_position < 50:
+    experience_lines = experience.split("\n")
+    for line in experience_lines:
+        if y_position < margin:
             c.showPage()
-            y_position = height - 50
-        c.drawString(margin, y_position, line)
-        y_position -= 15
+            y_position = height - margin
+        y_position = wrap_text(line, width - 2 * margin, margin, y_position)
 
     # Education
     y_position -= 30
@@ -70,33 +77,11 @@ def create_pdf(file_path, name, email, phone, linkedin, github, summary, skills,
     c.drawString(margin, y_position, "Education:")
     y_position -= 20
     c.setFont("Helvetica", 10)
-    for line in education.split("\n"):
-        if y_position < 50:
+    education_lines = education.split("\n")
+    for line in education_lines:
+        if y_position < margin:
             c.showPage()
-            y_position = height - 50
-        c.drawString(margin, y_position, line)
-        y_position -= 15
+            y_position = height - margin
+        y_position = wrap_text(line, width - 2 * margin, margin, y_position)
 
     c.save()
-
-
-# Streamlit UI
-st.title("Resume Builder")
-
-# Input fields
-name = st.text_input("Name")
-email = st.text_input("Email")
-phone = st.text_input("Phone")
-linkedin = st.text_input("LinkedIn Profile URL")
-github = st.text_input("GitHub Profile URL")
-summary = st.text_area("Professional Summary")
-skills = st.text_area("Skills")
-experience = st.text_area("Work Experience (separate by new lines)")
-education = st.text_area("Education (separate by new lines)")
-
-# Generate Resume button
-if st.button("Generate Resume"):
-    pdf_path = "resume.pdf"
-    create_pdf(pdf_path, name, email, phone, linkedin, github, summary, skills, experience, education)
-    with open(pdf_path, "rb") as pdf_file:
-        st.download_button("Download Resume", pdf_file, file_name="resume.pdf")
