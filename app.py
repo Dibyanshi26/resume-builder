@@ -6,6 +6,7 @@ from reportlab.lib.enums import TA_CENTER
 from reportlab.lib import colors
 
 
+# Function to create Resume
 def create_resume(file_path, name, email, phone, linkedin, github, tableau, summary, education, skills, experience, projects):
     doc = SimpleDocTemplate(file_path, pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=72)
     elements = []
@@ -78,6 +79,7 @@ def create_resume(file_path, name, email, phone, linkedin, github, tableau, summ
     doc.build(elements)
 
 
+# Function to create Cover Letter
 def create_cover_letter(file_path, name, address, phone, email, company_name, job_title, key_skills, achievements):
     doc = SimpleDocTemplate(file_path, pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=72)
     elements = []
@@ -110,30 +112,22 @@ def create_cover_letter(file_path, name, address, phone, email, company_name, jo
 
     introduction = f"""
     I am excited to apply for the {job_title} position at {company_name}. With a solid foundation in {', '.join(key_skills.split(','))}, 
-    I bring a proven ability to tackle complex challenges and deliver impactful results. I came across this opportunity through [source, e.g., company website], 
+    I have successfully applied my expertise to solve complex challenges and drive impactful results. I came across this opportunity through [source, e.g., company website], 
     and I am eager to contribute to the continued success of your organization.
     """
     elements.append(Paragraph(introduction, normal_style))
     elements.append(Spacer(1, 12))
 
-    story_1 = f"""
-    In my role as [first experience], I [describe your responsibilities and achievements]. This allowed me to develop expertise in {', '.join(key_skills.split(',')[:3])}, 
-    enabling me to achieve [specific outcomes].
+    achievements_paragraph = f"""
+    Here are some of my key achievements:
+    {chr(10).join([f"- {achievement.strip()}" for achievement in achievements.split(',')])}
     """
-    elements.append(Paragraph(story_1, normal_style))
-    elements.append(Spacer(1, 12))
-
-    story_2 = f"""
-    Additionally, during my time at [second experience], I [describe another achievement]. This further strengthened my skills in [list skills], 
-    ensuring successful delivery of [specific results].
-    """
-    elements.append(Paragraph(story_2, normal_style))
+    elements.append(Paragraph(achievements_paragraph, normal_style))
     elements.append(Spacer(1, 12))
 
     conclusion = f"""
-    I am confident that my background, combined with my passion for [relevant field], makes me a strong candidate for this role. 
-    I look forward to the opportunity to discuss how I can contribute to {company_name}'s goals. Please feel free to contact me at {phone} or {email}. 
-    Thank you for considering my application.<br/><br/>
+    I look forward to discussing how my qualifications align with your needs and exploring how I can contribute to the success of {company_name}. 
+    Please feel free to contact me at {phone} or {email}. Thank you for considering my application.<br/><br/>
     Best regards,<br/>
     {name}
     """
@@ -144,10 +138,23 @@ def create_cover_letter(file_path, name, address, phone, email, company_name, jo
 
 
 # Streamlit UI
-st.title("Resume and Cover Letter Generator")
+st.set_page_config(page_title="Professional Docs Generator", layout="centered")
+st.title("✨ Tailored Resume & Cover Letter Builder ✨")
+
+# Sidebar Instructions
+st.sidebar.title("Steps to Create Your Documents")
+st.sidebar.write("### Steps to Create a Resume:")
+st.sidebar.write("1. Fill out your personal information.")
+st.sidebar.write("2. Enter your professional summary, education, skills, and experience.")
+st.sidebar.write("3. Add projects you’ve worked on.")
+st.sidebar.write("4. Click the 'Generate Resume' button to download your resume.")
+st.sidebar.write("### Steps to Create a Cover Letter:")
+st.sidebar.write("1. Enter your address, company name, and job title.")
+st.sidebar.write("2. Provide key skills and achievements relevant to the job.")
+st.sidebar.write("3. Click the 'Generate Cover Letter' button to download your cover letter.")
 
 # Input fields for resume
-st.header("Resume")
+st.header("Create Your Resume 📄")
 name = st.text_input("Name")
 email = st.text_input("Email")
 phone = st.text_input("Phone")
@@ -161,7 +168,7 @@ experience = st.text_area("Work Experience (separate entries with two newlines, 
 projects = st.text_area("Projects (separate entries with two newlines, format: Project - Details)")
 
 # Input fields for cover letter
-st.header("Cover Letter")
+st.header("Create Your Cover Letter ✉️")
 address = st.text_area("Your Address")
 company_name = st.text_input("Company Name")
 job_title = st.text_input("Job Title")
@@ -180,3 +187,10 @@ if st.button("Generate Cover Letter"):
     create_cover_letter(cover_letter_path, name, address, phone, email, company_name, job_title, key_skills, achievements)
     with open(cover_letter_path, "rb") as pdf_file:
         st.download_button("Download Cover Letter", pdf_file, file_name="cover_letter.pdf")
+
+# Footer
+st.markdown("<hr>", unsafe_allow_html=True)
+st.markdown(
+    "<p style='text-align: center;'>✨ Designed with ❤️ using Streamlit, by Dibyanshi Singh ✨</p>",
+    unsafe_allow_html=True,
+)
